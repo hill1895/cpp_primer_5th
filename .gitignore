@@ -1,1 +1,8 @@
-*.swp,*.out,*.gch
+*.swp
+*.out
+*.gch
+*.pch
+*.swn
+*.swl
+*.swo
+

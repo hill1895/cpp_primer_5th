@@ -2,10 +2,15 @@
 #define STRING_H
 
 #include <memory>
+#include <iostream>
 #include <utility>
+#include <cstring>
 
 class String
 {
+  friend std::ostream &operator<<(std::ostream&,const String&);
+  friend bool operator==(const String&,const String&);
+  friend bool operator!=(const String&,const String&);
 public:
   String():String(""){}
   String(const char*);
@@ -14,6 +19,9 @@ public:
   String(String&&) noexcept;
   String &operator=(String&&) noexcept;
   ~String();
+
+  char &operator[](size_t n){return elements[n];}
+  const char &operator[](size_t n) const {return elements[n];}
 
   const char *c_str() const {return elements;}
   size_t size() const {return end-elements;}
@@ -95,5 +103,31 @@ String::~String()
   free();
 }
    
+std::ostream &operator<<(std::ostream& os,const String &s)
+{
+  os<<s.c_str();
+  return os;
+}
+
+bool operator==(const String& s1,const String& s2)
+{
+  if(strcmp(s1.c_str(),s2.c_str())==0)
+    return true;
+  else
+    return false;
+}
+
+bool operator!=(const String& s1,const String& s2)
+{
+  return !(s1==s2);
+}
+
+
+
+
+
+
+
+
 
 #endif

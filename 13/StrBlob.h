@@ -19,6 +19,10 @@ public:
   StrBlobPtr end();
   StrBlob();
   StrBlob(std::initializer_list<std::string> i1);
+
+  StrBlob(const StrBlob &sb):data(std::make_shared<std::vector<std::string>>(*sb.data)){}
+  StrBlob &operator=(const StrBlob &);
+
   size_type size() const {return data->size();}
   bool empty() const {return data->empty();}
   void push_back(const std::string &t) {data->push_back(t);}
@@ -47,6 +51,12 @@ private:
 //class StrBlob
 StrBlob::StrBlob(): data(std::make_shared<std::vector<std::string>>()){}
 StrBlob::StrBlob(std::initializer_list<std::string> i1):data(std::make_shared<std::vector<std::string>>(i1)){}
+
+StrBlob &StrBlob::operator=(const StrBlob &sb)
+{
+  data=std::make_shared<std::vector<std::string>>(*sb.data);
+  return *this;
+}
 
 void StrBlob::check(size_type i,const std::string &msg) const
 {

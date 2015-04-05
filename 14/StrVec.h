@@ -4,16 +4,26 @@
 #include <memory>
 #include <utility>
 #include <string>
+#include <initializer_list>
 
 class StrVec
 {
+  friend inline bool operator==(const StrVec&,const StrVec&);
+  friend inline bool operator!=(const StrVec&,const StrVec&);
 public:
   StrVec():elements(nullptr),first_free(nullptr),cap(nullptr){}
   StrVec(const StrVec &);
   StrVec &operator=(const StrVec&);
   StrVec(StrVec&&) noexcept;
   StrVec &operator=(StrVec&&) noexcept;
+  StrVec &operator=(std::initializer_list<std::string>);
   ~StrVec();
+
+  std::string& operator[](size_t n){return elements[n];}
+  const std::string& operator[](size_t n)const
+  {
+    return elements[n];
+  }
 
   void push_back(const std::string &);
   std::size_t size()const{return first_free-elements;}
@@ -98,6 +108,15 @@ StrVec &StrVec::operator=(StrVec&& s)noexcept
   return *this;
 }
 
+StrVec &StrVec::operator=(std::initializer_list<std::string> il)
+{
+  auto data=alloc_n_copy(il.begin(),il.end());
+  free();
+  elements=data.first;
+  first_free=cap=data.second;
+  return *this;
+}
+
 
 StrVec::~StrVec()
 {
@@ -159,7 +178,27 @@ void StrVec::resize(std::size_t n)
 {
   resize(n,std::string());
 }
-     
+
+bool operator==(const StrVec& lhs,const StrVec& rhs)
+{
+  if(lhs.size()==rhs.size() && lhs.capacity()==rhs.capacity())
+  {
+    for(auto i=lhs.elements,j=rhs.elements;i!=lhs.first_free,j!=rhs.first_free;i++,j++)
+    {
+      if((*i)!=(*j))
+        return false;
+    }
+    return true;
+   }
+  else 
+    return false;
+}
+
+bool operator!=(const StrVec& lhs,const StrVec& rhs)
+{
+  return !(lhs==rhs);
+}
+   
 
 #endif
 
